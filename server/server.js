@@ -1,8 +1,10 @@
 require('./config/config');
 
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
+const app = express();
 
 
 // parse application/x-www-form-urlencoded
@@ -11,32 +13,18 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
+app.use(require('./routes/usuario'));
 
-app.get('/usuario', function(req, res) {
-    res.json('GET usuario');
-});
-app.post('/usuario', function(req, res) {
 
-    let body = req.body;
+// mongoose.connect('mongodb://localhost:27017/cafe', (err, resp) => {
+mongoose.connect(process.env.URL_DB, (err, resp) => {
 
-    if (body.nombre === undefined) {
-        res.status(400).json({
-            ok: false,
-            mensaje: 'El nombre es necesario'
-        });
-    } else {
-        res.json({ body });
-    }
+    if (err) throw err;
 
-});
-app.put('/usuario/:id', function(req, res) {
-    let id = req.params.id;
-    res.json({
-        id
-    });
-});
-app.delete('/usuario', function(req, res) {
-    res.json('DELETE usuario');
+    console.log('Conectado a la DB');
+
+
+
 });
 
 app.listen(process.env.PORT, () => console.log(`Escuchando en ${process.env.PORT}`));
